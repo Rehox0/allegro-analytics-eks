@@ -1,0 +1,20 @@
+# EKS Infrastructure – Allegro Project
+
+## ⚠️ NOTE: S3 Backend Configuration
+This project uses a remote state stored in S3 with a lock in DynamoDB.
+
+### Infrastructure parameters:
+- **Region:** `eu-north-1`
+- **Bucket Name:** `allegro-analytics-eks-tfstate-2026`
+- **DynamoDB Table:** `terraform-state-lock`
+
+### Synchronization instructions:
+The same bucket name **MUST** appear in two places:
+1. `.bootstrap/variables.tf` -> variable `state_bucket_name`
+2. `./backend.tf` -> the `bucket` parameter in the `backend “s3”` block
+
+---
+
+## Setup steps:
+1. Go to `.bootstrap/` and run `terraform apply`.
+2. Return to the root directory and run `terraform init`.
