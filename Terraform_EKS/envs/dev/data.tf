@@ -1,5 +1,5 @@
 data "aws_secretsmanager_secret" "manual_secrets" {
-  name = "allegro-app"
+  name = var.secrets_name
 }
 
 data "aws_eks_cluster_auth" "main" {
@@ -14,9 +14,9 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 data "aws_ecr_repository" "frontend" {
-  name = "allegro-app-eks-frontend"
+  name = var.ecr_frontend_name
 }
 
 data "aws_ecr_repository" "backend" {
-  name = "allegro-app-eks-backend"
+  name = var.ecr_backend_name
 }

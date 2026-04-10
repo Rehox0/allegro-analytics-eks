@@ -22,3 +22,15 @@ variable "common_tags" {
       ManagedBy   = "Terraform"
     }
 }
+
+variable "secrets_name" {
+  default = "allegro-app-secrets-dev"
+}
+
+variable "ecr_frontend_name" {
+  default = "allegro-app-ecr-eks-frontend"
+}
+
+variable "ecr_backend_name" {
+  default = "allegro-app-ecr-eks-backend"
+}

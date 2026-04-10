@@ -7,6 +7,7 @@ This project uses a remote state stored in S3 with a lock in DynamoDB.
 - **Region:** `eu-north-1`
 - **Bucket Name:** `allegro-analytics-eks-tfstate-2026`
 - **DynamoDB Table:** `terraform-state-lock`
+- **Secrets Manager** `allegro-app-secrets-dev` for development and `allegro-app-secrets-prod` for production
 
 ### Synchronization instructions:
 The same bucket name **MUST** appear in two places:
