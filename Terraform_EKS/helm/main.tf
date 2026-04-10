@@ -3,6 +3,8 @@ resource "helm_release" "aws_lb_controller" {
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
+  cleanup_on_fail = true
+  force_update    = true
 
   set = [
     {
@@ -11,13 +13,23 @@ resource "helm_release" "aws_lb_controller" {
     },
     {
       name  = "serviceAccount.create"
-      value = "true"
+      value = "false"
+    },
+    {
+      name  = "vpcId"
+      value = var.vpc_id
+    },
+    {
+      name  = "region"
+      value = var.aws_region
     },
     {
       name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
       value = var.alb_controller_role_arn
     }
   ]
+
+  depends_on = [helm_release.cilium]
 }
 
 resource "helm_release" "cilium" {
@@ -38,6 +50,58 @@ resource "helm_release" "cilium" {
     {
       name  = "egressGateway.enabled"
       value = "true"
+    },
+    {
+      name  = "bpf.masquerade"
+      value = "true"
+    },
+    {
+      name  = "enableIPv4Masquerade"
+      value = "true"
+    },
+    {
+      name  = "routingMode"
+      value = "native"
+    },
+    {
+      name  = "kubeProxyReplacement"
+      value = "true"
+    },
+    {
+      name  = "k8sServiceHost"
+      value = replace(var.cluster_endpoint, "https://", "")
+    },
+    {
+      name  = "k8sServicePort"
+      value = "443"
+    },
+    {
+      name  = "installNoConntrackIptablesRules"
+      value = "true"
+    },
+    {
+      name  = "hubble.enabled"
+      value = "true"
+    },
+    {
+      name  = "hubble.relay.enabled"
+      value = "true"
+    },
+    {
+      name  = "hubble.ui.enabled"
+      value = "true"
+    },
+    {
+        name  = "vlanBPF.enabled"
+        value = "true"
+    },
+    {
+      name  = "hubble.tls.enabled"
+      value = "true"
+    },
+    {
+      name  = "hubble.tls.auto.method"
+      value = "helm"
     },
     {
       name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"

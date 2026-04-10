@@ -57,7 +57,9 @@ module "iam" {
 
 module "helm_charts" {
   source     = "../../helm"
-  
+
+  aws_region              = var.aws_region
+  vpc_id                  = module.vpc.vpc_id
   cluster_name            = module.eks.cluster_name
   cluster_endpoint        = module.eks.cluster_endpoint
   cluster_ca_certificate  = module.eks.cluster_certificate_authority_data
