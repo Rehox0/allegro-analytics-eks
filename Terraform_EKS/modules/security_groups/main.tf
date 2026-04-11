@@ -48,6 +48,12 @@ resource "aws_security_group" "vpc_endpoints" {
   })
 }
 
+# Empty Security Group for Management
+resource "aws_security_group" "management" {
+  name        = "management-sg"
+  vpc_id      = var.vpc_id
+}
+
 ########### Dynamic Ingress Rules ###########
 
 resource "aws_security_group_rule" "alb_http" {
@@ -125,4 +131,13 @@ resource "aws_security_group_rule" "nodes_egress_all" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.eks_nodes.id
+}
+
+resource "aws_security_group_rule" "management_egress_all" {
+  type               = "egress"
+  from_port          = 0
+  to_port            = 0
+  protocol           = "-1"
+  cidr_blocks        = ["0.0.0.0/0"]
+  security_group_id  = aws_security_group.management.id
 }

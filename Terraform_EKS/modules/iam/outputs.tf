@@ -15,3 +15,7 @@ output "cilium_operator_role_arn" {
   value       = aws_iam_role.cilium_operator.arn
   description = "ARN for IAM in Cilium"
 }
+
+output "management_instance_profile_name" {
+  value = aws_iam_instance_profile.management_profile.name
+}

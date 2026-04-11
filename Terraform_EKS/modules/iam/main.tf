@@ -142,7 +142,7 @@ resource "aws_iam_role_policy" "cilium_operator_policy" {
 }
 
 
-# Role for AWS LB Controller (IRSA)
+# IAM for AWS LB Controller (IRSA)
 resource "aws_iam_role" "alb_controller" {
   name = "${var.project_name}-alb-controller-role"
 
@@ -173,4 +173,28 @@ resource "aws_iam_policy" "alb_controller" {
 resource "aws_iam_role_policy_attachment" "alb_controller_attach" {
   policy_arn = aws_iam_policy.alb_controller.arn
   role       = aws_iam_role.alb_controller.name
+}
+
+#IAM for SSM menagment
+resource "aws_iam_role" "management_role" {
+  name = "eks-management-ssm-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = { Service = "ec2.amazonaws.com" }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_managed" {
+  role       = aws_iam_role.management_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "management_profile" {
+  name = "eks-management-profile"
+  role = aws_iam_role.management_role.name
 }

@@ -3,10 +3,7 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "project_name" {
-  type        = string
-  description = "Project name"
-}
+variable "project_name" { type = string }
 
 variable "vpc_id" {
   type        = string
@@ -23,3 +20,5 @@ variable "alb_ingress_cidr_blocks" {
   default     = ["0.0.0.0/0"]
   description = "IP ranges that can connect to the ALB"
 }
+
+variable "management_sg_id" { type = string }

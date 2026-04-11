@@ -3,10 +3,7 @@ variable "common_tags" {
   type        = map(string)
 }
 
-variable "project_name" {
-  type        = string
-  description = "Project name"
-}
+variable "project_name" { type = string }
 
 variable "cluster_oidc_issuer" {
   type        = string
@@ -14,6 +11,4 @@ variable "cluster_oidc_issuer" {
   default     = ""
 }
 
-variable "secret_arn" {
-  type = string
-}
+variable "secret_arn" { type = string }
