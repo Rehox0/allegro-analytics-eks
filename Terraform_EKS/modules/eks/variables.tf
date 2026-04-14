@@ -8,23 +8,18 @@ variable "project_name" {
   description = "Project name"
 }
 
+variable "cluster_name" {
+  type = string
+}
+
 variable "subnet_ids" {
   type        = list(string)
   description = "List of private subnet IDs from the VPC module"
 }
 
-variable "cluster_name" {
-  description = "EKS cluster name"
-  type        = string
-}
-
 variable "cluster_role_arn" {
   type        = string
   description = "ARN for IAM for an EKS cluster"
-}
-
-variable "vpc_id" {
-  type        = string
 }
 
 variable "eks_nodes_sg_id" {
@@ -38,24 +33,30 @@ variable "node_role_arn" {
 }
 
 variable "node_capacity_type" {
-  type        = string
-  default     = "SPOT"
+  type    = string
+  default = "SPOT"
 }
 
 variable "node_instance_types" {
-  type        = list(string)
-  default     = ["t3.small"]
+  type    = list(string)
+  default = ["t3.small"]
 }
 
 variable "node_max_unavailable" {
-  type        = number
-  default     = 1
+  type    = number
+  default = 1
 }
 
 variable "node_labels" {
   type        = map(string)
   default     = {}
   description = "Additional labels for EKS nodes"
+}
+
+variable "cluster_version" {
+  type        = string
+  description = "EKS control plane version"
+  default     = "1.35"
 }
 
 variable "node_desired_size" { type = number }

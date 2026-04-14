@@ -5,7 +5,7 @@ variable "common_tags" {
 
 variable "project_name" { type = string }
 
-variable "cluster_oidc_issuer" {
+variable "eks_oidc_url" {
   type        = string
   description = "Issuer URL from the EKS cluster (provided after the cluster is created)"
   default     = ""

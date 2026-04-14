@@ -1,0 +1,102 @@
+resource "aws_security_group_rule" "alb_http" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = var.alb_ingress_cidr_blocks
+  security_group_id = aws_security_group.alb.id
+}
+
+resource "aws_security_group_rule" "alb_https" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = var.alb_ingress_cidr_blocks
+  security_group_id = aws_security_group.alb.id
+}
+
+resource "aws_security_group_rule" "rds_from_nodes" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.eks_nodes.id
+  security_group_id        = aws_security_group.rds.id
+}
+
+resource "aws_security_group_rule" "cluster_to_nodes" {
+  type                     = "ingress"
+  description              = "Allow Control Plane to communicate with worker nodes"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_nodes.id
+  source_security_group_id = var.eks_cluster_sg_id
+}
+
+resource "aws_security_group_rule" "cluster_to_nodes_kubelet" {
+  type                     = "ingress"
+  description              = "Allow Control Plane to communicate with Kubelet"
+  from_port                = 1025
+  to_port                  = 65535
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_nodes.id
+  source_security_group_id = var.eks_cluster_sg_id
+}
+
+resource "aws_security_group_rule" "endpoints_from_nodes_https" {
+  type                     = "ingress"
+  description              = "Allow EKS nodes to access interface VPC endpoints over HTTPS"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.vpc_endpoints.id
+  source_security_group_id = aws_security_group.eks_nodes.id
+}
+
+resource "aws_security_group_rule" "endpoints_from_management_https" {
+  type                     = "ingress"
+  description              = "Allow management host to access interface VPC endpoints over HTTPS"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.vpc_endpoints.id
+  source_security_group_id = aws_security_group.management.id
+}
+
+resource "aws_security_group_rule" "endpoints_egress_all" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.vpc_endpoints.id
+}
+
+resource "aws_security_group_rule" "alb_egress_all" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.alb.id
+}
+
+resource "aws_security_group_rule" "nodes_egress_all" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.eks_nodes.id
+}
+
+resource "aws_security_group_rule" "management_egress_all" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.management.id
+}

@@ -17,8 +17,5 @@ variable "eks_cluster_sg_id" {
 
 variable "alb_ingress_cidr_blocks" {
   type        = list(string)
-  default     = ["0.0.0.0/0"]
   description = "IP ranges that can connect to the ALB"
 }
-
-variable "management_sg_id" { type = string }

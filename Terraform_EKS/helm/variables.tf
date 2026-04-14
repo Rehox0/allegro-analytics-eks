@@ -6,3 +6,5 @@ variable "cilium_role_arn" { type = string }
 variable "eks_nodes_sg_id" { type = string }
 variable "vpc_id" { type = string }
 variable "aws_region" { type = string }
+variable "alb_controller_chart_version" { type = string }
+variable "cilium_chart_version" { type = string }

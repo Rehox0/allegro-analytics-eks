@@ -5,6 +5,12 @@ resource "aws_s3_bucket" "terraform_state" {
   lifecycle {
     prevent_destroy = true
   }
+
+  tags = {
+    Project     = var.project_name
+    Environment = "bootstrap"
+    ManagedBy   = "Terraform"
+  }
 }
 
 resource "aws_s3_bucket_versioning" "enabled" {
@@ -31,6 +37,14 @@ resource "aws_s3_bucket_public_access_block" "block" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_ownership_controls" "this" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 ########## DynamoDB ##########

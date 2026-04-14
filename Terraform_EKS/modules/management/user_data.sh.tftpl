@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+
+KUBECTL_VERSION="${kubectl_version}"
+KUBECTL_SHA256="${kubectl_sha256}"
+HELM_VERSION="${helm_version}"
+HELM_SHA256="${helm_sha256}"
+
+curl -fsSLo /tmp/kubectl "https://dl.k8s.io/release/$${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+echo "$${KUBECTL_SHA256}  /tmp/kubectl" | sha256sum -c -
+install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+
+curl -fsSLo /tmp/helm.tar.gz "https://get.helm.sh/helm-$${HELM_VERSION}-linux-amd64.tar.gz"
+echo "$${HELM_SHA256}  /tmp/helm.tar.gz" | sha256sum -c -
+tar -xzf /tmp/helm.tar.gz -C /tmp
+install -o root -g root -m 0755 /tmp/linux-amd64/helm /usr/local/bin/helm
+
+rm -rf /tmp/kubectl /tmp/helm.tar.gz /tmp/linux-amd64

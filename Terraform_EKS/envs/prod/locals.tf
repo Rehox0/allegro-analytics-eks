@@ -1,7 +1,7 @@
 locals {
   tags = {
     Project     = var.project_name
-    Environment = "dev"
+    Environment = "prod"
     ManagedBy   = "Terraform"
   }
 

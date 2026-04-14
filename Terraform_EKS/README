@@ -19,3 +19,17 @@ The same bucket name **MUST** appear in two places:
 ## Setup steps:
 1. Go to `.bootstrap/` and run `terraform apply`.
 2. Return to the root directory and run `terraform init`.
+
+## Private-only cluster defaults
+- EKS API endpoint is private-only (`endpoint_public_access = false`).
+- ALB exposure is internal-only by convention and restricted to internal CIDR ranges passed in `alb_ingress_cidr_blocks`.
+- Terraform apply for environments should run from the management EC2 in VPC (or through SSM).
+
+## Ingress convention (required for internal ALB)
+For every Ingress managed by AWS Load Balancer Controller, include:
+
+```yaml
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+```

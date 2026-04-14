@@ -32,7 +32,3 @@ variable "cluster_name" {
   description = "EKS cluster name"
   type        = string
 }
-
-variable "endpoints_sg_id" {
-  type        = string
-}

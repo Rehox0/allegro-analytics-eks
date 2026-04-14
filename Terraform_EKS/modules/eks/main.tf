@@ -1,13 +1,13 @@
 resource "aws_eks_cluster" "main" {
-  name     = "${var.project_name}-eks-cluster"
+  name     = var.cluster_name
   role_arn = var.cluster_role_arn
-  version  = "1.35"
+  version  = var.cluster_version
 
   vpc_config {
     subnet_ids              = var.subnet_ids
     security_group_ids      = [var.eks_nodes_sg_id]
     endpoint_private_access = true
-    endpoint_public_access  = true
+    endpoint_public_access  = false
   }
 
   # Logs for CKS

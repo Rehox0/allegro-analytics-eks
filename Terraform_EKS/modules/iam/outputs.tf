@@ -19,3 +19,7 @@ output "cilium_operator_role_arn" {
 output "management_instance_profile_name" {
   value = aws_iam_instance_profile.management_profile.name
 }
+
+output "oidc_provider_arn" {
+  value = aws_iam_openid_connect_provider.eks.arn
+}

@@ -1,10 +1,10 @@
 resource "helm_release" "aws_lb_controller" {
-  name       = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-load-balancer-controller"
-  namespace  = "kube-system"
+  name            = "aws-load-balancer-controller"
+  repository      = "https://aws.github.io/eks-charts"
+  chart           = "aws-load-balancer-controller"
+  version         = var.alb_controller_chart_version
+  namespace       = "kube-system"
   cleanup_on_fail = true
-  force_update    = true
 
   set = [
     {
@@ -36,6 +36,7 @@ resource "helm_release" "cilium" {
   name       = "cilium"
   repository = "https://helm.cilium.io/"
   chart      = "cilium"
+  version    = var.cilium_chart_version
   namespace  = "kube-system"
 
   set = [
@@ -92,8 +93,8 @@ resource "helm_release" "cilium" {
       value = "true"
     },
     {
-        name  = "vlanBPF.enabled"
-        value = "true"
+      name  = "vlanBPF.enabled"
+      value = "true"
     },
     {
       name  = "hubble.tls.enabled"
