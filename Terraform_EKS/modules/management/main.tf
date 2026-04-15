@@ -20,6 +20,8 @@ resource "aws_launch_template" "management" {
     terraform_version = var.terraform_version
     terraform_sha256  = var.terraform_sha256
     ssh_public_keys   = var.ssh_public_keys
+    aws_region        = var.aws_region
+    cluster_name      = var.cluster_name
   }))
 }
 

@@ -20,6 +20,11 @@ output "management_instance_profile_name" {
   value = aws_iam_instance_profile.management_profile.name
 }
 
+output "management_role_arn" {
+  value       = aws_iam_role.management_role.arn
+  description = "ARN of the management EC2 role used for Terraform operations"
+}
+
 output "oidc_provider_arn" {
   value = aws_iam_openid_connect_provider.eks.arn
 }

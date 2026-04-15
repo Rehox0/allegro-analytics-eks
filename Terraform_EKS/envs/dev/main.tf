@@ -59,6 +59,7 @@ module "vpc_endpoints" {
 module "iam" {
   source       = "../../modules/iam"
   project_name = var.project_name
+  cluster_name = module.eks.cluster_name
   eks_oidc_url = module.eks.eks_oidc_url
   secret_arn   = data.aws_secretsmanager_secret.manual_secrets.arn
 
@@ -89,6 +90,8 @@ module "management" {
   subnet_ids            = module.vpc.private_subnets
   instance_profile_name = module.iam.management_instance_profile_name
   management_sg_id      = module.security_groups.management_sg_id
+  aws_region            = var.aws_region
+  cluster_name          = module.eks.cluster_name
   kubectl_version       = var.kubectl_version
   kubectl_sha256        = var.kubectl_sha256
   helm_version          = var.helm_version

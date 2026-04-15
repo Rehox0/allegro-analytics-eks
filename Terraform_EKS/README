@@ -37,3 +37,13 @@ metadata:
 
 The Draft:
 trzeba sklonowac terraform na `ec2 management` przez tunel ssh - ssm i tam dokonczyc terraform apply.
+
+git clone <url-repo>
+cd allegro-analytics-eks/Terraform_EKS/envs/dev
+
+lub
+
+rsync -avzL --delete --progress --exclude '.terraform' --exclude '.git' --exclude '.bootstrap' ./allegro-analytics-eks/ ec2-user@<ID INSTANCE>:/home/ec2-user/allegro-analytics-eks/
+
+Czy AWS cred są poprawne?:
+aws sts get-caller-identity

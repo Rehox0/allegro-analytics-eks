@@ -45,6 +45,26 @@ resource "aws_security_group_rule" "cluster_to_nodes_kubelet" {
   source_security_group_id = var.eks_cluster_sg_id
 }
 
+resource "aws_security_group_rule" "management_to_eks_api_nodes_sg" {
+  type                     = "ingress"
+  description              = "Allow management host to reach EKS private API endpoint on HTTPS"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_nodes.id
+  source_security_group_id = aws_security_group.management.id
+}
+
+resource "aws_security_group_rule" "management_to_eks_api_cluster_sg" {
+  type                     = "ingress"
+  description              = "Allow management host to reach EKS cluster primary SG on HTTPS"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = var.eks_cluster_sg_id
+  source_security_group_id = aws_security_group.management.id
+}
+
 resource "aws_security_group_rule" "endpoints_from_nodes_https" {
   type                     = "ingress"
   description              = "Allow EKS nodes to access interface VPC endpoints over HTTPS"

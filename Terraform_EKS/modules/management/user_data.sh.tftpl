@@ -46,5 +46,38 @@ if [ -s "$${TMP_KEYS_FILE}" ]; then
   chmod 0600 "$${AUTHORIZED_KEYS_FILE}"
 fi
 
+cat > /etc/profile.d/eks-kubeconfig.sh <<'EOF_KUBECONFIG'
+#!/bin/bash
+
+# Run only for interactive shells opened by ec2-user.
+if [[ $- != *i* ]]; then
+  return 0
+fi
+
+if [ "$${USER:-}" != "ec2-user" ]; then
+  return 0
+fi
+
+if ! command -v aws >/dev/null 2>&1 || ! command -v kubectl >/dev/null 2>&1; then
+  return 0
+fi
+
+EKS_REGION="${aws_region}"
+EKS_CLUSTER_NAME="${cluster_name}"
+
+if kubectl --request-timeout=5s version >/dev/null 2>&1; then
+  return 0
+fi
+
+echo "[eks-kubeconfig] kubeconfig unavailable, refreshing context for '$${EKS_CLUSTER_NAME}' ($${EKS_REGION})..."
+if aws eks update-kubeconfig --region "$${EKS_REGION}" --name "$${EKS_CLUSTER_NAME}" >/dev/null 2>&1; then
+  echo "[eks-kubeconfig] kubeconfig refreshed."
+else
+  echo "[eks-kubeconfig] failed to refresh kubeconfig. Verify AWS credentials/permissions and network access to EKS endpoint."
+fi
+EOF_KUBECONFIG
+
+chmod 0755 /etc/profile.d/eks-kubeconfig.sh
+
 rm -rf /tmp/kubectl /tmp/helm.tar.gz /tmp/linux-amd64 /tmp/terraform.zip /tmp/terraform
 rm -f "$${TMP_KEYS_FILE}"

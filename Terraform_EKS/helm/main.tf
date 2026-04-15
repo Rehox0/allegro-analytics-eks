@@ -33,11 +33,13 @@ resource "helm_release" "aws_lb_controller" {
 }
 
 resource "helm_release" "cilium" {
-  name       = "cilium"
-  repository = "https://helm.cilium.io/"
-  chart      = "cilium"
-  version    = var.cilium_chart_version
-  namespace  = "kube-system"
+  name            = "cilium"
+  repository      = "https://helm.cilium.io/"
+  chart           = "cilium"
+  version         = var.cilium_chart_version
+  namespace       = "kube-system"
+  cleanup_on_fail = true
+  timeout         = 600
 
   set = [
     {

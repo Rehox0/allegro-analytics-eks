@@ -1,7 +1,3 @@
-data "tls_certificate" "eks" {
-  url = var.eks_oidc_url
-}
-
 data "aws_iam_policy_document" "alb_controller" {
   statement {
     effect = "Allow"

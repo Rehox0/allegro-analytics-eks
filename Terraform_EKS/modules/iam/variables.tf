@@ -5,6 +5,11 @@ variable "common_tags" {
 
 variable "project_name" { type = string }
 
+variable "cluster_name" {
+  type        = string
+  description = "EKS cluster name used for access entry management"
+}
+
 variable "eks_oidc_url" {
   type        = string
   description = "Issuer URL from the EKS cluster (provided after the cluster is created)"
