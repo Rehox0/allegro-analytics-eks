@@ -91,4 +91,5 @@ module "management" {
   kubectl_sha256        = var.kubectl_sha256
   helm_version          = var.helm_version
   helm_sha256           = var.helm_sha256
+  ssh_public_keys       = var.management_ssh_public_keys
 }

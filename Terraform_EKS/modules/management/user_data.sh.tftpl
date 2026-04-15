@@ -15,4 +15,27 @@ echo "$${HELM_SHA256}  /tmp/helm.tar.gz" | sha256sum -c -
 tar -xzf /tmp/helm.tar.gz -C /tmp
 install -o root -g root -m 0755 /tmp/linux-amd64/helm /usr/local/bin/helm
 
+# Install SSH public keys for ec2-user so access survives ASG instance rotation.
+AUTHORIZED_KEYS_FILE="/home/ec2-user/.ssh/authorized_keys"
+TMP_KEYS_FILE="/tmp/management_ssh_keys"
+: > "$${TMP_KEYS_FILE}"
+
+%{ for key in ssh_public_keys ~}
+cat <<'EOF_KEY' >> "$${TMP_KEYS_FILE}"
+${key}
+EOF_KEY
+%{ endfor ~}
+
+if [ -s "$${TMP_KEYS_FILE}" ]; then
+  install -d -m 0700 -o ec2-user -g ec2-user /home/ec2-user/.ssh
+  touch "$${AUTHORIZED_KEYS_FILE}"
+  chown ec2-user:ec2-user "$${AUTHORIZED_KEYS_FILE}"
+  chmod 0600 "$${AUTHORIZED_KEYS_FILE}"
+  cat "$${TMP_KEYS_FILE}" >> "$${AUTHORIZED_KEYS_FILE}"
+  sort -u "$${AUTHORIZED_KEYS_FILE}" -o "$${AUTHORIZED_KEYS_FILE}"
+  chown ec2-user:ec2-user "$${AUTHORIZED_KEYS_FILE}"
+  chmod 0600 "$${AUTHORIZED_KEYS_FILE}"
+fi
+
 rm -rf /tmp/kubectl /tmp/helm.tar.gz /tmp/linux-amd64
+rm -f "$${TMP_KEYS_FILE}"

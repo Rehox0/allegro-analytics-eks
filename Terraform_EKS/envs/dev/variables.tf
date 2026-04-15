@@ -58,6 +58,12 @@ variable "helm_sha256" {
   default     = "759c656fbd9c11e6a47784ecbeac6ad1eb16a9e76d202e51163ab78504848862"
 }
 
+variable "management_ssh_public_keys" {
+  type        = list(string)
+  description = "Public SSH keys injected into management host authorized_keys"
+  default     = []
+}
+
 variable "alb_controller_chart_version" {
   type        = string
   description = "Pinned chart version for aws-load-balancer-controller"
