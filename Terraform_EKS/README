@@ -33,3 +33,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
 ```
+
+
+The Draft:
+trzeba sklonowac terraform na `ec2 management` przez tunel ssh - ssm i tam dokonczyc terraform apply.

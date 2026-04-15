@@ -91,5 +91,7 @@ module "management" {
   kubectl_sha256        = var.kubectl_sha256
   helm_version          = var.helm_version
   helm_sha256           = var.helm_sha256
+  terraform_version     = var.terraform_version
+  terraform_sha256      = var.terraform_sha256
   ssh_public_keys       = var.management_ssh_public_keys
 }

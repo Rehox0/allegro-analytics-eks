@@ -5,6 +5,10 @@ KUBECTL_VERSION="${kubectl_version}"
 KUBECTL_SHA256="${kubectl_sha256}"
 HELM_VERSION="${helm_version}"
 HELM_SHA256="${helm_sha256}"
+TERRAFORM_VERSION="${terraform_version}"
+TERRAFORM_SHA256="${terraform_sha256}"
+
+dnf install -y unzip
 
 curl -fsSLo /tmp/kubectl "https://dl.k8s.io/release/$${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
 echo "$${KUBECTL_SHA256}  /tmp/kubectl" | sha256sum -c -
@@ -14,6 +18,11 @@ curl -fsSLo /tmp/helm.tar.gz "https://get.helm.sh/helm-$${HELM_VERSION}-linux-am
 echo "$${HELM_SHA256}  /tmp/helm.tar.gz" | sha256sum -c -
 tar -xzf /tmp/helm.tar.gz -C /tmp
 install -o root -g root -m 0755 /tmp/linux-amd64/helm /usr/local/bin/helm
+
+curl -fsSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/$${TERRAFORM_VERSION}/terraform_$${TERRAFORM_VERSION}_linux_amd64.zip"
+echo "$${TERRAFORM_SHA256}  /tmp/terraform.zip" | sha256sum -c -
+unzip -q /tmp/terraform.zip -d /tmp/terraform
+install -o root -g root -m 0755 /tmp/terraform/terraform /usr/local/bin/terraform
 
 # Install SSH public keys for ec2-user so access survives ASG instance rotation.
 AUTHORIZED_KEYS_FILE="/home/ec2-user/.ssh/authorized_keys"
@@ -37,5 +46,5 @@ if [ -s "$${TMP_KEYS_FILE}" ]; then
   chmod 0600 "$${AUTHORIZED_KEYS_FILE}"
 fi
 
-rm -rf /tmp/kubectl /tmp/helm.tar.gz /tmp/linux-amd64
+rm -rf /tmp/kubectl /tmp/helm.tar.gz /tmp/linux-amd64 /tmp/terraform.zip /tmp/terraform
 rm -f "$${TMP_KEYS_FILE}"
