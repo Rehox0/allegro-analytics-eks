@@ -17,3 +17,9 @@ variable "eks_oidc_url" {
 }
 
 variable "secret_arn" { type = string }
+
+variable "eks_console_user_principal_arn" {
+  type        = string
+  description = "Optional IAM principal ARN (typically IAM User) granted EKS cluster admin access entry"
+  default     = ""
+}

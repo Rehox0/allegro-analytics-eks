@@ -80,7 +80,15 @@ resource "aws_iam_role_policy" "management_terraform_apply" {
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
           "iam:Get*",
-          "iam:List*"
+          "iam:List*",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:ListSecrets",
+          "secretsmanager:GetResourcePolicy",
+          "autoscaling:DescribeAutoScalingGroups",
+          "autoscaling:DescribeAutoScalingInstances",
+          "autoscaling:DescribeLaunchConfigurations",
+          "autoscaling:DescribeTags",
         ]
         Resource = "*"
       },
@@ -111,4 +119,26 @@ resource "aws_eks_access_policy_association" "management_admin" {
   }
 
   depends_on = [aws_eks_access_entry.management_admin]
+}
+
+resource "aws_eks_access_entry" "console_user_admin" {
+  count = var.eks_console_user_principal_arn != "" ? 1 : 0
+
+  cluster_name  = var.cluster_name
+  principal_arn = var.eks_console_user_principal_arn
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "console_user_admin" {
+  count = var.eks_console_user_principal_arn != "" ? 1 : 0
+
+  cluster_name  = var.cluster_name
+  principal_arn = var.eks_console_user_principal_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.console_user_admin]
 }

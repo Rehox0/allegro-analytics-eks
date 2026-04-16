@@ -75,6 +75,12 @@ variable "management_ssh_public_keys" {
   description = "Public SSH keys injected into management host authorized_keys"
 }
 
+variable "eks_console_user_principal_arn" {
+  type        = string
+  description = "IAM principal ARN (IAM User) to receive EKS cluster admin access entry"
+  default     = ""
+}
+
 variable "alb_controller_chart_version" {
   type        = string
   description = "Pinned chart version for aws-load-balancer-controller"
