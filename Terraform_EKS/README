@@ -25,28 +25,32 @@ The same bucket name **MUST** appear in two places:
 - ALB exposure is internal-only by convention and restricted to internal CIDR ranges passed in `alb_ingress_cidr_blocks`.
 - Terraform apply for environments should run from the management EC2 in VPC (or through SSM).
 
-## Ingress convention (required for internal ALB)
-For every Ingress managed by AWS Load Balancer Controller, include:
 
-```yaml
-metadata:
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internal
+## GitHub Actions + OIDC (Bootstrap-managed)
+
+Required variables in `.bootstrap`:
+
+```hcl
+github_owner      = "OWNER_OR_ORG"
+github_repository = "REPO_NAME"
+github_token      = "ghp_xxx..." # token with rights to manage environment secrets
 ```
+
+### Run workflow
+Use `Terraform OIDC + SSM` workflow (`workflow_dispatch`) and choose:
+- `environment`: `dev|prod`
+- `operation`: `plan|apply|destroy` (`destroy` allowed only for `dev`)
+- `aws_region`: AWS region for OIDC + SSM calls (default `eu-north-1`)
+- `ref`: branch/tag/SHA
+
+The workflow assumes role via OIDC, finds `mgmt-asg` instance, then runs Terraform remotely over SSM in:
+- `Terraform_EKS/envs/<environment>`
 
 
 The Draft:
-trzeba sklonowac terraform na `ec2 management` przez tunel ssh - ssm i tam dokonczyc terraform apply.
 
-git clone <url-repo>
-cd allegro-analytics-eks/Terraform_EKS/envs/dev
+rsync -avzL --delete --progress --exclude '.terraform' --exclude '.git' --exclude '.bootstrap' --exclude '*.tfstate*' ./allegro-analytics-eks/ ec2-user@i-0b9f96ab0ba0d5335:/home/ec2-user/allegro-analytics-eks/
 
-lub
-
-rsync -avzL --delete --progress --exclude '.terraform' --exclude '.git' --exclude '.bootstrap' ./allegro-analytics-eks/ ec2-user@i-0b9f96ab0ba0d5335:/home/ec2-user/allegro-analytics-eks/
-
-Czy AWS cred są poprawne?:
-aws sts get-caller-identity
 
 WARNING!!
 Local device are UNABLE to see the resources in EKS cluster. Therefore, there may be a drift in the `terraform plan`

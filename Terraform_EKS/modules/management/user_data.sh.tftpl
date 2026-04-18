@@ -7,26 +7,29 @@ HELM_VERSION="${helm_version}"
 HELM_SHA256="${helm_sha256}"
 TERRAFORM_VERSION="${terraform_version}"
 TERRAFORM_SHA256="${terraform_sha256}"
+BOOTSTRAP_TMP_DIR="/home/ec2-user/bootstrap-tmp"
 
-dnf install -y unzip
+dnf install -y unzip git
+mkdir -p "$${BOOTSTRAP_TMP_DIR}"
+echo "[bootstrap] using disk workspace: $${BOOTSTRAP_TMP_DIR}"
 
-curl -fsSLo /tmp/kubectl "https://dl.k8s.io/release/$${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
-echo "$${KUBECTL_SHA256}  /tmp/kubectl" | sha256sum -c -
-install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+curl -fsSLo "$${BOOTSTRAP_TMP_DIR}/kubectl" "https://dl.k8s.io/release/$${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+echo "$${KUBECTL_SHA256}  $${BOOTSTRAP_TMP_DIR}/kubectl" | sha256sum -c -
+install -o root -g root -m 0755 "$${BOOTSTRAP_TMP_DIR}/kubectl" /usr/local/bin/kubectl
 
-curl -fsSLo /tmp/helm.tar.gz "https://get.helm.sh/helm-$${HELM_VERSION}-linux-amd64.tar.gz"
-echo "$${HELM_SHA256}  /tmp/helm.tar.gz" | sha256sum -c -
-tar -xzf /tmp/helm.tar.gz -C /tmp
-install -o root -g root -m 0755 /tmp/linux-amd64/helm /usr/local/bin/helm
+curl -fsSLo "$${BOOTSTRAP_TMP_DIR}/helm.tar.gz" "https://get.helm.sh/helm-$${HELM_VERSION}-linux-amd64.tar.gz"
+echo "$${HELM_SHA256}  $${BOOTSTRAP_TMP_DIR}/helm.tar.gz" | sha256sum -c -
+tar -xzf "$${BOOTSTRAP_TMP_DIR}/helm.tar.gz" -C "$${BOOTSTRAP_TMP_DIR}"
+install -o root -g root -m 0755 "$${BOOTSTRAP_TMP_DIR}/linux-amd64/helm" /usr/local/bin/helm
 
-curl -fsSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/$${TERRAFORM_VERSION}/terraform_$${TERRAFORM_VERSION}_linux_amd64.zip"
-echo "$${TERRAFORM_SHA256}  /tmp/terraform.zip" | sha256sum -c -
-unzip -q /tmp/terraform.zip -d /tmp/terraform
-install -o root -g root -m 0755 /tmp/terraform/terraform /usr/local/bin/terraform
+curl -fsSLo "$${BOOTSTRAP_TMP_DIR}/terraform.zip" "https://releases.hashicorp.com/terraform/$${TERRAFORM_VERSION}/terraform_$${TERRAFORM_VERSION}_linux_amd64.zip"
+echo "$${TERRAFORM_SHA256}  $${BOOTSTRAP_TMP_DIR}/terraform.zip" | sha256sum -c -
+unzip -q "$${BOOTSTRAP_TMP_DIR}/terraform.zip" -d "$${BOOTSTRAP_TMP_DIR}/terraform"
+install -o root -g root -m 0755 "$${BOOTSTRAP_TMP_DIR}/terraform/terraform" /usr/local/bin/terraform
 
 # Install SSH public keys for ec2-user so access survives ASG instance rotation.
 AUTHORIZED_KEYS_FILE="/home/ec2-user/.ssh/authorized_keys"
-TMP_KEYS_FILE="/tmp/management_ssh_keys"
+TMP_KEYS_FILE="$${BOOTSTRAP_TMP_DIR}/management_ssh_keys"
 : > "$${TMP_KEYS_FILE}"
 
 %{ for key in ssh_public_keys ~}
@@ -79,5 +82,4 @@ EOF_KUBECONFIG
 
 chmod 0755 /etc/profile.d/eks-kubeconfig.sh
 
-rm -rf /tmp/kubectl /tmp/helm.tar.gz /tmp/linux-amd64 /tmp/terraform.zip /tmp/terraform
-rm -f "$${TMP_KEYS_FILE}"
+rm -rf "$${BOOTSTRAP_TMP_DIR}/kubectl" "$${BOOTSTRAP_TMP_DIR}/helm.tar.gz" "$${BOOTSTRAP_TMP_DIR}/linux-amd64" "$${BOOTSTRAP_TMP_DIR}/terraform.zip" "$${BOOTSTRAP_TMP_DIR}/terraform" "$${TMP_KEYS_FILE}"

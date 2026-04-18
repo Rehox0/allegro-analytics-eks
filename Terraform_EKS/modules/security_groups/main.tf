@@ -43,7 +43,7 @@ resource "aws_security_group" "vpc_endpoints" {
   name   = "${var.project_name}-vpc-endpoints-sg"
   vpc_id = var.vpc_id
 
-  tags   = merge(var.common_tags, {
+  tags = merge(var.common_tags, {
     Name = "${var.project_name}-vpc-endpoints-sg"
   })
 }

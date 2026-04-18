@@ -9,7 +9,6 @@ on:
         type: choice
         options:
           - dev
-          - staging
           - prod
       operation:
         description: "Terraform operation"
@@ -94,7 +93,7 @@ jobs:
           read -r -d '' REMOTE_SCRIPT <<'SCRIPT' || true
           set -euo pipefail
 
-          RUN_DIR="/tmp/gha-tf-${{ github.run_id }}-${{ github.run_attempt }}"
+          RUN_DIR="/home/ec2-user/gha-tf-${{ github.run_id }}-${{ github.run_attempt }}"
           REPO_DIR="${RUN_DIR}/repo"
           REPO_SLUG="${{ github.repository }}"
           TARGET_REF="${{ env.TARGET_REF }}"
