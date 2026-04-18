@@ -8,7 +8,7 @@ HELM_SHA256="${helm_sha256}"
 TERRAFORM_VERSION="${terraform_version}"
 TERRAFORM_SHA256="${terraform_sha256}"
 
-dnf install -y unzip
+dnf install -y unzip git
 
 curl -fsSLo /tmp/kubectl "https://dl.k8s.io/release/$${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
 echo "$${KUBECTL_SHA256}  /tmp/kubectl" | sha256sum -c -
