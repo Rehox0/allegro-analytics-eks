@@ -54,11 +54,6 @@ github_repository = "REPO_NAME"
 github_token      = "ghp_xxx..." # token with rights to manage environment secrets
 ```
 
-Bootstrap outputs:
-- `github_actions_role_arn_dev`
-- `github_actions_role_arn_prod`
-- `github_oidc_provider_arn`
-
 ### Run workflow
 Use `Terraform OIDC + SSM` workflow (`workflow_dispatch`) and choose:
 - `environment`: `dev|prod`
