@@ -90,33 +90,3 @@ variable "cilium_chart_version" {
   description = "Pinned chart version for cilium"
   default     = "1.18.4"
 }
-
-variable "github_oidc_repository" {
-  type        = string
-  description = "GitHub repository in OWNER/REPO format allowed for OIDC role assumption"
-  default     = ""
-}
-
-variable "github_oidc_subjects" {
-  type        = list(string)
-  description = "Allowed GitHub OIDC subjects for the IAM role"
-  default     = []
-}
-
-variable "github_oidc_role_name" {
-  type        = string
-  description = "IAM role name used by GitHub Actions OIDC"
-  default     = "github-actions-terraform-ssm-role"
-}
-
-variable "github_oidc_provider_arn" {
-  type        = string
-  description = "Existing GitHub OIDC provider ARN (optional)"
-  default     = ""
-}
-
-variable "github_oidc_thumbprint_list" {
-  type        = list(string)
-  description = "Thumbprints for GitHub OIDC provider certificates"
-  default     = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
-}

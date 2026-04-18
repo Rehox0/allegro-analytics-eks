@@ -36,23 +36,37 @@ WARNING!!
 Local device are UNABLE to see the resources in EKS cluster. Therefore, there may be a drift in the `terraform plan`
 
 
-### 1) Enable OIDC role in Terraform
-# Optional when OIDC provider already exists in this AWS account:
-# github_oidc_provider_arn = "arn:aws:iam::<ACCOUNT_ID>:oidc-provider/token.actions.githubusercontent.com"
+## GitHub Actions + OIDC (Bootstrap-managed)
 
-After `terraform apply`, read output from IAM module:
-- `github_actions_role_arn`
+Bootstrap now creates:
+- GitHub OIDC provider in IAM: `token.actions.githubusercontent.com`
+- IAM role for dev: `github-actions-terraform-ssm-role-dev`
+- IAM role for prod: `github-actions-terraform-ssm-role-prod`
+- GitHub Environment secrets (set automatically):
+  - `dev` -> `AWS_GITHUB_ACTIONS_ROLE_ARN=<dev role arn>`
+  - `prod` -> `AWS_GITHUB_ACTIONS_ROLE_ARN=<prod role arn>`
 
-### 2) Configure GitHub Environment secrets
-For each GitHub Environment (`dev`, `staging`, `prod`) add:
-- `AWS_GITHUB_ACTIONS_ROLE_ARN` = value of `github_actions_role_arn`.
+Required variables in `.bootstrap`:
 
-### 3) Run workflow
+```hcl
+github_owner      = "OWNER_OR_ORG"
+github_repository = "REPO_NAME"
+github_token      = "ghp_xxx..." # token with rights to manage environment secrets
+```
+
+Bootstrap outputs:
+- `github_actions_role_arn_dev`
+- `github_actions_role_arn_prod`
+- `github_oidc_provider_arn`
+
+### Run workflow
 Use `Terraform OIDC + SSM` workflow (`workflow_dispatch`) and choose:
-- `environment`: `dev|staging|prod`
+- `environment`: `dev|prod`
 - `operation`: `plan|apply|destroy` (`destroy` allowed only for `dev`)
 - `aws_region`: AWS region for OIDC + SSM calls (default `eu-north-1`)
 - `ref`: branch/tag/SHA
 
 The workflow assumes role via OIDC, finds `mgmt-asg` instance, then runs Terraform remotely over SSM in:
 - `Terraform_EKS/envs/<environment>`
+
+`prod` should stay protected by GitHub Environment rules (main branch restriction + required approval).

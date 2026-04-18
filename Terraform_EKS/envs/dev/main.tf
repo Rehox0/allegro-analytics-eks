@@ -63,11 +63,6 @@ module "iam" {
   eks_oidc_url                   = module.eks.eks_oidc_url
   secret_arn                     = data.aws_secretsmanager_secret.manual_secrets.arn
   eks_console_user_principal_arn = var.eks_console_user_principal_arn
-  github_oidc_repository         = var.github_oidc_repository
-  github_oidc_subjects           = var.github_oidc_subjects
-  github_oidc_role_name          = var.github_oidc_role_name
-  github_oidc_provider_arn       = var.github_oidc_provider_arn
-  github_oidc_thumbprint_list    = var.github_oidc_thumbprint_list
 
   common_tags = local.tags
 }

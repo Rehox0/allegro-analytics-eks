@@ -9,7 +9,6 @@ on:
         type: choice
         options:
           - dev
-          - staging
           - prod
       operation:
         description: "Terraform operation"
@@ -28,9 +27,7 @@ on:
         description: "Git ref to run (branch/tag/SHA)"
         required: true
         type: string
-        options:
-          - main
-          - testing
+        default: "main"
 
 permissions:
   id-token: write

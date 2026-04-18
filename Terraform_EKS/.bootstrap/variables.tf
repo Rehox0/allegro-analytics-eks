@@ -13,5 +13,21 @@ variable "aws_region" {
 variable "state_bucket_name" {
   description = "Full s3 name for .tfstate"
   type        = string
-  default     = "allegro-analytics-eks-tfstate-2026" 
+  default     = "allegro-analytics-eks-tfstate-2026"
+}
+
+variable "github_token" {
+  description = "GitHub token with permissions to manage repository environments and secrets"
+  type        = string
+  sensitive   = true
+}
+
+variable "github_owner" {
+  description = "GitHub owner (organization or user)"
+  type        = string
+}
+
+variable "github_repository" {
+  description = "GitHub repository name without owner"
+  type        = string
 }
