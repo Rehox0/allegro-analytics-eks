@@ -28,7 +28,9 @@ on:
         description: "Git ref to run (branch/tag/SHA)"
         required: true
         type: string
-        default: "main"
+        options:
+          - main
+          - testing
 
 permissions:
   id-token: write
