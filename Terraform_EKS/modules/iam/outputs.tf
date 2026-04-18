@@ -28,3 +28,13 @@ output "management_role_arn" {
 output "oidc_provider_arn" {
   value = aws_iam_openid_connect_provider.eks.arn
 }
+
+output "github_actions_role_arn" {
+  value       = try(aws_iam_role.github_actions[0].arn, "")
+  description = "ARN of GitHub Actions IAM role (OIDC), empty when not configured"
+}
+
+output "github_oidc_provider_arn" {
+  value       = local.github_oidc_effective_arn
+  description = "GitHub OIDC provider ARN used by the module, empty when not configured"
+}

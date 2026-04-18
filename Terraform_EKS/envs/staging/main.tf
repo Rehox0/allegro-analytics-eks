@@ -56,11 +56,16 @@ module "vpc_endpoints" {
 }
 
 module "iam" {
-  source       = "../../modules/iam"
-  project_name = var.project_name
-  cluster_name = module.eks.cluster_name
-  eks_oidc_url = module.eks.eks_oidc_url
-  secret_arn   = data.aws_secretsmanager_secret.manual_secrets.arn
+  source                      = "../../modules/iam"
+  project_name                = var.project_name
+  cluster_name                = module.eks.cluster_name
+  eks_oidc_url                = module.eks.eks_oidc_url
+  secret_arn                  = data.aws_secretsmanager_secret.manual_secrets.arn
+  github_oidc_repository      = var.github_oidc_repository
+  github_oidc_subjects        = var.github_oidc_subjects
+  github_oidc_role_name       = var.github_oidc_role_name
+  github_oidc_provider_arn    = var.github_oidc_provider_arn
+  github_oidc_thumbprint_list = var.github_oidc_thumbprint_list
 
   common_tags = local.tags
 }
