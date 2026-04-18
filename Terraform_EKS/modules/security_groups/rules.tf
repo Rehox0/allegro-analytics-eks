@@ -35,6 +35,16 @@ resource "aws_security_group_rule" "cluster_to_nodes" {
   source_security_group_id = var.eks_cluster_sg_id
 }
 
+resource "aws_security_group_rule" "nodes_to_cluster_api" {
+  type                     = "ingress"
+  description              = "Allow nodes to communicate with EKS control plane"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = var.eks_cluster_sg_id
+  source_security_group_id = aws_security_group.eks_nodes.id
+}
+
 resource "aws_security_group_rule" "cluster_to_nodes_kubelet" {
   type                     = "ingress"
   description              = "Allow Control Plane to communicate with Kubelet"

@@ -43,7 +43,7 @@ cd allegro-analytics-eks/Terraform_EKS/envs/dev
 
 lub
 
-rsync -avzL --delete --progress --exclude '.terraform' --exclude '.git' --exclude '.bootstrap' ./allegro-analytics-eks/ ec2-user@i-0b9f96ab0ba0d5335:/home/ec2-user/allegro-analytics-eks/
+rsync -avzL --delete --progress --exclude '.terraform' --exclude '.git' --exclude '.bootstrap' --exclude '*.tfstate*' ./allegro-analytics-eks/ ec2-user@i-0b9f96ab0ba0d5335:/home/ec2-user/allegro-analytics-eks/
 
 Czy AWS cred są poprawne?:
 aws sts get-caller-identity
