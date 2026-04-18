@@ -26,25 +26,7 @@ The same bucket name **MUST** appear in two places:
 - Terraform apply for environments should run from the management EC2 in VPC (or through SSM).
 
 
-The Draft:
-trzeba sklonowac terraform na `ec2 management` przez tunel ssh - ssm i tam dokonczyc terraform apply.
-
-rsync -avzL --delete --progress --exclude '.terraform' --exclude '.git' --exclude '.bootstrap' --exclude '*.tfstate*' ./allegro-analytics-eks/ ec2-user@i-0b9f96ab0ba0d5335:/home/ec2-user/allegro-analytics-eks/
-
-
-WARNING!!
-Local device are UNABLE to see the resources in EKS cluster. Therefore, there may be a drift in the `terraform plan`
-
-
 ## GitHub Actions + OIDC (Bootstrap-managed)
-
-Bootstrap now creates:
-- GitHub OIDC provider in IAM: `token.actions.githubusercontent.com`
-- IAM role for dev: `github-actions-terraform-ssm-role-dev`
-- IAM role for prod: `github-actions-terraform-ssm-role-prod`
-- GitHub Environment secrets (set automatically):
-  - `dev` -> `AWS_GITHUB_ACTIONS_ROLE_ARN=<dev role arn>`
-  - `prod` -> `AWS_GITHUB_ACTIONS_ROLE_ARN=<prod role arn>`
 
 Required variables in `.bootstrap`:
 
@@ -64,4 +46,11 @@ Use `Terraform OIDC + SSM` workflow (`workflow_dispatch`) and choose:
 The workflow assumes role via OIDC, finds `mgmt-asg` instance, then runs Terraform remotely over SSM in:
 - `Terraform_EKS/envs/<environment>`
 
-`prod` should stay protected by GitHub Environment rules (main branch restriction + required approval).
+
+The Draft:
+
+rsync -avzL --delete --progress --exclude '.terraform' --exclude '.git' --exclude '.bootstrap' --exclude '*.tfstate*' ./allegro-analytics-eks/ ec2-user@i-0b9f96ab0ba0d5335:/home/ec2-user/allegro-analytics-eks/
+
+
+WARNING!!
+Local device are UNABLE to see the resources in EKS cluster. Therefore, there may be a drift in the `terraform plan`
