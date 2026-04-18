@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - testing
     paths:
       - 'Terraform_EKS/**'
       - '.github/workflows/terraform-check.yml'
